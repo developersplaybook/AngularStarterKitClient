@@ -1,0 +1,30 @@
+<div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title h4">
+          <form [formGroup]="passwordForm" style="display:inline">
+            <label style="display:inline">
+              <strong>{{ captionText }}</strong>
+              <input *ngIf="!isAuthorized" 
+                     type="password" 
+                     formControlName="password"
+                     placeholder="Password"
+                     style="text-align: center;" 
+                     (keyup.enter)="handleLogInOut()"
+                     />
+            </label>
+          </form>
+        </div>
+      </div>
+      <div class="modal-body">
+        <button (click)="handleClose()" class="btn btn-secondary">Cancel</button>
+        <button (click)="handleLogInOut()" class="btn btn-primary">
+          {{ isAuthorized ? 'Log Out' : 'Log In' }}
+        </button>
+        <button style="border: none; background: none; color: black;">
+          <fa-icon [icon]="faSpinner" size="2x" [spin]="true" [style.opacity]="loading ? '1' : '0'"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  

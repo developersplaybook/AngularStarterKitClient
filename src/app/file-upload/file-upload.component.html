@@ -1,0 +1,40 @@
+<!-- file-upload.component.html -->
+<div>
+   <label for="upload-button">
+      <img *ngIf="image.preview" [src]="sanitizedImagePreview" alt="preview" />
+      <div
+        *ngIf="!image.preview"
+        [ngClass]="{ 'drag-drop-zone': true, 'inside-drag-area': dropState.inDropZone }"
+        (drop)="handleDrop($event)"
+        (dragover)="handleDragOver($event)"
+        (dragenter)="handleDragEnter($event)"
+        (dragleave)="handleDragLeave($event)"
+      >
+        <strong class="text-center">Drag the file here...</strong>
+        <br />
+        <strong class="text-center">or use file picker!</strong>
+      </div>
+    </label>
+    <input
+      type="file"
+      id="upload-button"
+      style="display: none"
+      (change)="handleChange($event)"
+    />
+    <div *ngIf="image.preview">
+      <br />
+      <button (click)="handleCancel($event)">
+        <fa-icon [icon]="faTimes" size="2x"></fa-icon>
+      </button>
+      <button *ngIf="showSave" (click)="handleUpload($event)">
+        <fa-icon [icon]="faSave" size="2x"></fa-icon>
+      </button>
+      <fa-icon
+        [icon]="faSpinner"
+        size="2x"
+        [spin]="true"
+        [ngStyle]="{ opacity: opacity }"
+      ></fa-icon>
+    </div>
+  </div>
+  

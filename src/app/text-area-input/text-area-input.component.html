@@ -1,0 +1,9 @@
+<div style="display: inline;">
+  <strong>{{ preText }}&nbsp;</strong>
+  <textarea
+    style="text-align: center;"
+    [value]="value" 
+    [placeholder]="placeholder"
+    (input)="updateValue($event)"
+  ></textarea>
+</div>

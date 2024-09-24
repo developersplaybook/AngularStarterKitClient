@@ -1,0 +1,18 @@
+<div *ngIf="localShowModal" class="modal-overlay">   
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title h4">
+            Confirm deletion</h5>
+        </div>
+        <div class="alert alert-danger">
+          {{ message }}
+        </div>
+        <div class="modal-body">
+          <button (click)="handleClose()" class="btn btn-secondary">Cancel</button>
+          <button (click)="confirmModal.emit()" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
