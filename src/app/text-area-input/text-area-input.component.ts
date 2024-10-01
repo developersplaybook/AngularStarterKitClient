@@ -10,12 +10,12 @@ export class TextAreaInputComponent {
   @Input() placeholder: string = '';  // Equivalent to the React 'placeholder' prop
   @Input() hasError: boolean = false; // Equivalent to the React 'hasError' prop
 
-  @Output() textChanged = new EventEmitter<string>(); // Equivalent to the React 'onTextChanged' prop
+  @Output() onTextChanged = new EventEmitter<string>(); 
 
   // Method to handle text input changes
   updateValue(event: Event): void {
     const input = event.target as HTMLTextAreaElement;
     this.text = input.value;
-    this.textChanged.emit(this.text); // Emit the changed text
+    this.onTextChanged.emit(this.text); // Emit the changed text
   }
 }

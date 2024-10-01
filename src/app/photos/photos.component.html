@@ -31,7 +31,7 @@
                           [text]="dragAndDropPhotoCaption"
                           placeholder="Enter caption"
                           [hasError]="false"
-                          (textChanged)="handleDragAndDropPhotoCaptionChanged($event)"
+                          (onTextChanged)="handleDragAndDropPhotoCaptionChanged($event)"
                         ></app-text-area-input>
                         <app-photo-frame [defaultImage]="true">
                           <app-file-upload
@@ -47,7 +47,7 @@
                             [text]="captions[5 * rowIndex + index]"
                             placeholder="Enter caption"
                             [hasError]="false"
-                            (textChanged)="handleCaptionChange($event, index)"
+                            (onTextChanged)="handleCaptionChange($event, index)"
                           ></app-text-area-input>
                         </ng-container>
                         <ng-container *ngIf="!isAuthorized">
