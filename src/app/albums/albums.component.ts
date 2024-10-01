@@ -49,6 +49,7 @@ export class AlbumsComponent implements OnInit {
             const album = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
             this.albums.push(album);
           }
+          this.initializeErrorStates(this.albums);
           this.albumRows = this.getAlbumRows();
         },
         error: (error) => {
@@ -59,6 +60,13 @@ export class AlbumsComponent implements OnInit {
         }
       });
   }
+
+  initializeErrorStates = (albumsArray:any[]):void => {
+    this.errorStates = {};
+    albumsArray.forEach(album => {
+      this.errorStates[album.albumID] = false;
+    });
+  };
   
 
   noEmptyAlbumsExists(albums: any[]): boolean {
@@ -115,7 +123,7 @@ export class AlbumsComponent implements OnInit {
       });
   }
 
-  handleCaptionChange = (albumID: number) => {
-    this.errorStates[albumID] = false;
+  handleCaptionChange = (albumId: number) => {
+    this.errorStates[albumId] = false;
   };
 }

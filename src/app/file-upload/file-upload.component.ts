@@ -21,7 +21,7 @@ export class FileUploadComponent {
 
   @Input() albumId!: number;
   @Input() caption!: string;
-  @Output() photoAdded = new EventEmitter<any>();
+  @Output() onPhotoAdded = new EventEmitter<any>();
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -65,7 +65,7 @@ export class FileUploadComponent {
     this.apiService.postImageHelper(`${this.apiAddress}/api/photos/add/`, formData, this.token)
       .subscribe({
         next: response => {
-          this.photoAdded.emit(response);
+          this.onPhotoAdded.emit(response);
           this.image = { preview: '', raw: null };
         },
         error: error => {

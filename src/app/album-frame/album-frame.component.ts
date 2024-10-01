@@ -58,14 +58,14 @@ export class AlbumFrameComponent {
     }
   }
 
-  onUpdate(albumId: number, newCaption: string) {
+  onUpdate(newCaption: string) {
     if (this.update) {
       this.update.emit({ albumId: this.albumId, caption: newCaption });
     }
   }
 
   handleUpdateAlbum = () => {
-    this.onUpdate(this.albumId, this.caption); // Use the prop function to handle add
+    this.onUpdate(this.caption); // Use the prop function to handle add
   };
 
   onAdd(cap: string) {

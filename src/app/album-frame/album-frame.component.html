@@ -108,7 +108,13 @@
   
     <h4 *ngIf="isUpdateOldAlbum">
       <div style="color: rgb(152, 0, 0);">
-        <textarea [(ngModel)]="caption" placeholder="Enter Caption"></textarea>
+        <app-text-area-input  
+          [text]="caption" 
+          placeholder="Enter Caption"
+          [hasError]="hasError"
+          (onTextChanged)="handleCaptionChangeInternal($event)"
+          >
+      </app-text-area-input >
       </div>
     </h4>
     
@@ -122,7 +128,7 @@
         [text]="caption" 
         [placeholder]="'Enter Caption'"
         [hasError]="hasError"
-        (onTextChanged)="handleCaptionChangeInternal($event)">
+        (onTextChanged)="handleCaptionChangeInternal($event)"
       ></app-text-area-input>
       </div>
     </h4>
