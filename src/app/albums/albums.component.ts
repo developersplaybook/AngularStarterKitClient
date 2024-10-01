@@ -35,21 +35,32 @@ export class AlbumsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAlbumsWithPhotoCount();
+    this.initializeErrorStates(this.albums);
   }
 
+  
+  initializeErrorStates = (albumsArray:any[]):void => {
+    this.errorStates = {};
+    albumsArray.forEach(album => {
+      this.errorStates[album.albumID] = false;
+    });
+  };
+
+  noEmptyAlbumsExists(albums: any[]): boolean {
+    return albums.every(album => album.photoCount > 0);
+  }
 
   getAlbumsWithPhotoCount(): void {
     this.globalStateService.setLoading(true);
-  
-    this.apiService.getHelper<any[]>(`${this.apiAddress}/api/albums`)
+      this.apiService.getHelper<any[]>(`${this.apiAddress}/api/albums`)
       .subscribe({
         next: (response) => {
           this.albums = response;
           if (this.isAuthorized && this.noEmptyAlbumsExists(this.albums)) {
-            const album = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
-            this.albums.push(album);
+            const emptyAlbum = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
+            this.albums.push(emptyAlbum);
           }
-          this.initializeErrorStates(this.albums);
+
           this.albumRows = this.getAlbumRows();
         },
         error: (error) => {
@@ -61,24 +72,33 @@ export class AlbumsComponent implements OnInit {
       });
   }
 
-  initializeErrorStates = (albumsArray:any[]):void => {
-    this.errorStates = {};
-    albumsArray.forEach(album => {
-      this.errorStates[album.albumID] = false;
-    });
-  };
-  
-
-  noEmptyAlbumsExists(albums: any[]): boolean {
-    return albums.every(album => album.photoCount > 0);
-  }
-
   getAlbumRows(): any[][] {
     const rows = [];
     for (let i = 0; i < this.albums.length; i += 2) {
       rows.push(this.albums.slice(i, i + 2));
     }
     return rows;
+  }
+
+  handleDelete(albumId: number): void {
+    this.globalStateService.setLoading(true);
+    this.apiService.deleteHelper(`${this.apiAddress}/api/albums/delete/${albumId}`, this.token!
+    ).subscribe({
+      next: () => {
+        const updatedAlbums = this.albums.filter(album => album.albumID !== albumId)
+        this.albums=updatedAlbums;
+        if (this.isAuthorized && this.noEmptyAlbumsExists(updatedAlbums)) {
+          const emptyAlbum = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
+          this.albums =  [...this.albums , emptyAlbum];
+          this.albumRows = this.getAlbumRows();
+        }
+
+        delete this.errorStates[albumId]; 
+        this.globalStateService.setLoading(true);
+      },
+      error: (error) => console.error('Delete failed:', error),
+      complete: () => this.globalStateService.setLoading(false)
+    });
   }
 
   handleUpdate(albumId: number, newCaption: string): void {
@@ -89,7 +109,7 @@ export class AlbumsComponent implements OnInit {
         finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
       )
       .subscribe({
-        next: () => this.getAlbumsWithPhotoCount(),
+        next: () => this.albums = this.albums.map(album => album.albumID === albumId ? { ...album, caption: newCaption } : album),
         error: (error) => { 
           console.error('Update failed:', error); 
           this.errorStates[albumId] = true;
@@ -98,30 +118,28 @@ export class AlbumsComponent implements OnInit {
   }
   
 
-  handleDelete(albumId: number): void {
-    this.globalStateService.setLoading(true);
-    this.apiService.deleteHelper(`${this.apiAddress}/api/albums/delete/${albumId}`, this.token!
-    ).subscribe({
-      next: () => this.getAlbumsWithPhotoCount(),
-      error: (error) => console.error('Delete failed:', error),
-      complete: () => this.globalStateService.setLoading(false)
-    });
-  }
-
   handleAdd(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
     this.apiService.postHelper(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
       .pipe(
-        finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
+        finalize(() => this.globalStateService.setLoading(false)) // Ensures loading is reset in any case
       )
       .subscribe({
-        next: () => this.getAlbumsWithPhotoCount(),
-        error: (error) => { 
-          console.error('Add failed:', error); 
-          this.errorStates[albumId] = true;
+        next: (newAlbum: any) => {
+          // Update the albums list, keeping only albums with ID not equal to 0 and appending the new one
+          this.albums = [...this.albums.filter(album => album.albumID !== 0), newAlbum];
+          this.errorStates = { ...this.errorStates, [newAlbum.albumID]: false };
+          this.albumRows = this.getAlbumRows();
+        },
+        error: (error) => {
+          console.error('Failed to add album:', error);
+
+          // Set error state for the albumId
+          this.errorStates = { ...this.errorStates, [albumId]: true };
         }
       });
   }
+
 
   handleCaptionChange = (albumId: number) => {
     this.errorStates[albumId] = false;
