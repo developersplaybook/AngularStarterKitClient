@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit  } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service';
 import { Observable, finalize } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';     
+import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-albums',
@@ -20,7 +20,7 @@ export class AlbumsComponent implements OnInit {
   opacity$: Observable<number>;
   apiAddress: string = '';
   token: string = '';
-  isAuthorized:boolean = false;
+  isAuthorized: boolean = false;
   errorStates: { [key: number]: boolean } = {};
 
   constructor(
@@ -30,7 +30,7 @@ export class AlbumsComponent implements OnInit {
     this.opacity$ = this.globalStateService.loading.pipe(map(loading => loading ? 1 : 0));
     this.apiAddress = this.apiService.getApiAddress();
     this.isAuthorized = this.globalStateService.isAuthorizedSubject.value;
-    this.token = this.globalStateService.tokenSubject.value ? this.globalStateService.tokenSubject.value: '';
+    this.token = this.globalStateService.tokenSubject.value ? this.globalStateService.tokenSubject.value : '';
   }
 
   ngOnInit(): void {
@@ -38,8 +38,7 @@ export class AlbumsComponent implements OnInit {
     this.initializeErrorStates(this.albums);
   }
 
-  
-  initializeErrorStates = (albumsArray:any[]):void => {
+  initializeErrorStates = (albumsArray: any[]): void => {
     this.errorStates = {};
     albumsArray.forEach(album => {
       this.errorStates[album.albumID] = false;
@@ -52,7 +51,7 @@ export class AlbumsComponent implements OnInit {
 
   getAlbumsWithPhotoCount(): void {
     this.globalStateService.setLoading(true);
-      this.apiService.getHelper<any[]>(`${this.apiAddress}/api/albums`)
+    this.apiService.getHelper<any[]>(`${this.apiAddress}/api/albums`)
       .subscribe({
         next: (response) => {
           this.albums = response;
@@ -86,14 +85,14 @@ export class AlbumsComponent implements OnInit {
     ).subscribe({
       next: () => {
         const updatedAlbums = this.albums.filter(album => album.albumID !== albumId)
-        this.albums=updatedAlbums;
+        this.albums = updatedAlbums;
         if (this.isAuthorized && this.noEmptyAlbumsExists(updatedAlbums)) {
           const emptyAlbum = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
-          this.albums =  [...this.albums , emptyAlbum];
+          this.albums.push(emptyAlbum);
           this.albumRows = this.getAlbumRows();
         }
 
-        delete this.errorStates[albumId]; 
+        delete this.errorStates[albumId];
         this.globalStateService.setLoading(true);
       },
       error: (error) => console.error('Delete failed:', error),
@@ -110,13 +109,13 @@ export class AlbumsComponent implements OnInit {
       )
       .subscribe({
         next: () => this.albums = this.albums.map(album => album.albumID === albumId ? { ...album, caption: newCaption } : album),
-        error: (error) => { 
-          console.error('Update failed:', error); 
+        error: (error) => {
+          console.error('Update failed:', error);
           this.errorStates[albumId] = true;
         }
-    });
+      });
   }
-  
+
 
   handleAdd(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
