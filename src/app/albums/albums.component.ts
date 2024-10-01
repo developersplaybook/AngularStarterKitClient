@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit  } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service';
-import { Observable } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';     
 
@@ -21,6 +21,8 @@ export class AlbumsComponent implements OnInit {
   apiAddress: string = '';
   token: string = '';
   isAuthorized:boolean = false;
+  errorStates: { [key: number]: boolean } = {};
+
   constructor(
     private globalStateService: GlobalStateService,
     private apiService: ApiHelperService,
@@ -72,13 +74,18 @@ export class AlbumsComponent implements OnInit {
   }
 
   handleUpdate(albumId: number, newCaption: string): void {
-    this.globalStateService.setLoading(true);  
+    this.globalStateService.setLoading(true);
     this.apiService.putHelper(
-      `${this.apiAddress}/api/albums/update/${albumId}`, newCaption,this.token!
-    ).subscribe({
-      next: () => this.getAlbumsWithPhotoCount(),
-      error: (error) => console.error('Update failed:', error),
-      complete: () => this.globalStateService.setLoading(false)
+      `${this.apiAddress}/api/albums/update/${albumId}`, newCaption, this.token!)
+      .pipe(
+        finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
+      )
+      .subscribe({
+        next: () => this.getAlbumsWithPhotoCount(),
+        error: (error) => { 
+          console.error('Update failed:', error); 
+          this.errorStates[albumId] = true;
+        }
     });
   }
   
@@ -93,13 +100,22 @@ export class AlbumsComponent implements OnInit {
     });
   }
 
-  handleAdd(newCaption: string): void {
+  handleAdd(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
-    this.apiService.postHelper(`${this.apiAddress}/api/albums/add`, newCaption, this.token
-    ).subscribe({
-      next: () => this.getAlbumsWithPhotoCount(),
-      error: (error) => console.error('Add failed:', error),
-      complete: () => this.globalStateService.setLoading(false)
-    });
+    this.apiService.postHelper(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
+      .pipe(
+        finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
+      )
+      .subscribe({
+        next: () => this.getAlbumsWithPhotoCount(),
+        error: (error) => { 
+          console.error('Add failed:', error); 
+          this.errorStates[albumId] = true;
+        }
+      });
   }
+
+  handleCaptionChange = (albumID: number) => {
+    this.errorStates[albumID] = false;
+  };
 }

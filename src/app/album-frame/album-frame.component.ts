@@ -15,11 +15,12 @@ export class AlbumFrameComponent {
   @Input() albumId!: number;
   @Input() caption!: string;
   @Input() photoCount!: number;
-  @Input() isPublic!: boolean;
   @Input() itemCount!: number;
   @Output() delete = new EventEmitter<number>();
   @Output() update = new EventEmitter<{ albumId: number, caption: string }>();
-  @Output() add = new EventEmitter<string>(); 
+  @Output() add = new EventEmitter<{ albumId: number, caption: string }>(); 
+  @Input() hasError!: boolean;
+  @Output() onCaptionChange = new EventEmitter<string>();
   apiAddress: string = ''; 
   isAuthorized: boolean =false;; 
 
@@ -63,9 +64,22 @@ export class AlbumFrameComponent {
     }
   }
 
+  handleUpdateAlbum = () => {
+    this.onUpdate(this.albumId, this.caption); // Use the prop function to handle add
+  };
+
   onAdd(cap: string) {
     if (this.add) {
-      this.add.emit(cap);
+      this.add.emit({ albumId: this.albumId, caption: cap });
     }
   }
+
+  handleAddAlbum = () => {
+    this.onAdd(this.caption); // Use the prop function to handle add
+  };
+
+  handleCaptionChangeInternal = (value:string) => {
+    this.caption = value;
+    this.onCaptionChange.emit(value); // Call the function passed as a prop to reset the error state
+  };
 }

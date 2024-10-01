@@ -24,11 +24,12 @@
                       [albumId]="album.albumID"
                       [photoCount]="album.photoCount"
                       [caption]="album.caption"
-                      [isPublic]="album.isPublic"
                       [itemCount]="j"
                       (delete)="handleDelete(album.albumID)"
                       (update)="handleUpdate(album.albumID, $event.caption)"
-                      (add)="handleAdd($event)">
+                      (add)="handleAdd(album.albumID, $event.caption)"
+                      [hasError]="!!errorStates[album.albumID]"
+                      (onCaptionChange)="handleCaptionChange(album.albumID)">                     >
                     </app-album-frame>
                   </td>
                 </tr>

@@ -1,9 +1,12 @@
 <div style="display: inline;">
-  <strong>{{ preText }}&nbsp;</strong>
   <textarea
-    style="text-align: center;"
-    [value]="value" 
+    [ngStyle]="{
+      'text-align': 'center',
+      'border': hasError ? '2px solid red' : '1px solid black',
+      'background-color': hasError ? '#ffe6e6' : 'white'
+    }"
+    [value]="text"
     [placeholder]="placeholder"
-    (input)="updateValue($event)"
-  ></textarea>
+    (input)="updateValue($event)">
+  </textarea>
 </div>

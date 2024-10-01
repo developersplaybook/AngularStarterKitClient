@@ -2,7 +2,7 @@
     <div *ngIf="isUpdateOldAlbum" style="display: flex; justify-content: center; align-items: center; color: black;">
       <fa-icon 
         [icon]="faSave" 
-        (click)="!isDisabledForAddAndUpdate && onUpdate(albumId, caption)"
+        (click)="!isDisabledForAddAndUpdate && handleUpdateAlbum()"
         [ngStyle]="{
           fontSize: '2em',
           margin: '0 50px 0 80px',
@@ -25,7 +25,7 @@
     <div *ngIf="isAddNewAlbum" style="align-items: center; color: black;">
       <fa-icon 
         [icon]="faSave" 
-        (click)="!isDisabledForAddAndUpdate && onAdd(caption)"
+        (click)="!isDisabledForAddAndUpdate && handleAddAlbum()"
         [ngStyle]="{
           fontSize: '2em',
           margin: '0 50px 0 100px',
@@ -112,13 +112,18 @@
       </div>
     </h4>
     
-    <h4 *ngIf="!isUpdateOldAlbum">
+    <h4 *ngIf="!isUpdateOldAlbum && !isAddNewAlbum">
       <a [routerLink]="['/photos', albumId, caption]">{{ caption }}</a>
     </h4>
     
     <h4 *ngIf="isAddNewAlbum">
       <div style="color: rgb(152, 0, 0);">
-        <textarea [(ngModel)]="caption" placeholder="Enter Caption"></textarea>
+        <app-text-area-input 
+        [text]="caption" 
+        [placeholder]="'Enter Caption'"
+        [hasError]="hasError"
+        (textChanged)="handleCaptionChangeInternal($event)">
+      ></app-text-area-input>
       </div>
     </h4>
   

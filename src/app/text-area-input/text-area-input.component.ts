@@ -1,46 +1,21 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-text-area-input',
   templateUrl: './text-area-input.component.html',
-  styleUrls: ['./text-area-input.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: TextAreaInputComponent,
-    multi: true
-  }]
+  styleUrls: ['./text-area-input.component.scss']
 })
-export class TextAreaInputComponent implements ControlValueAccessor {
-  @Input() placeholder: string = '';
-  @Input() preText: string = '';
-  @Input() value: string = '';  
-  
-  @Output() textChanged = new EventEmitter<string>();
+export class TextAreaInputComponent {
+  @Input() text: string = '';         // Equivalent to the React 'text' prop
+  @Input() placeholder: string = '';  // Equivalent to the React 'placeholder' prop
+  @Input() hasError: boolean = false; // Equivalent to the React 'hasError' prop
 
-  onChange: (value: string) => void = () => {};
-  onTouched: () => void = () => {};
+  @Output() textChanged = new EventEmitter<string>(); // Equivalent to the React 'onTextChanged' prop
 
-  writeValue(value: string): void {
-    this.value = value;
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    // Implement if you need to disable the textarea
-  }
-
+  // Method to handle text input changes
   updateValue(event: Event): void {
     const input = event.target as HTMLTextAreaElement;
-    this.value = input.value;
-    this.onChange(this.value);
-    this.textChanged.emit(this.value);
+    this.text = input.value;
+    this.textChanged.emit(this.text); // Emit the changed text
   }
 }
