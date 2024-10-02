@@ -64,8 +64,8 @@
             <div class="buttonbar buttonbar-bottom">
               <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                  <div *ngFor="let photo of photos; let index = index" [ngClass]="{'current-page': index + 1 === indexPlusOne}" style="display:inline">
-                    <a *ngIf="index + 1 !== indexPlusOne" [routerLink]="getDetailsRoute(photo.photoID)" (click)="setDetailsRoute($event, photo.photoID)">{{index + 1}}</a><span *ngIf="index + 1 === indexPlusOne">{{index + 1}}</span>
+                  <div *ngFor="let photo of photos; let index = index" [ngClass]="{'current-page': index + 1 === photoNumber}" style="display:inline">
+                    <a *ngIf="index + 1 !== photoNumber" [routerLink]="getDetailsRoute(photo.photoID)" (click)="setDetailsRoute($event, photo.photoID)">{{index + 1}}</a><span *ngIf="index + 1 === photoNumber">{{index + 1}}</span>
                   </div>
                 </div>             
               </div>

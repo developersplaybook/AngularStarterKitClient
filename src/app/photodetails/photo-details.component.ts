@@ -17,7 +17,7 @@ export class PhotoDetailsComponent implements OnInit {
   captionToShow: string = ''; 
   first: number = 0; 
   last: number = 0; 
-  indexPlusOne: number = 0; 
+  photoNumber: number = 0; 
   prev: number = 0; 
   next: number = 0; 
 
@@ -31,7 +31,6 @@ export class PhotoDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.photoId = +params['photoId'] || 0;
       this.albumId = +params['albumId'] || 0;
-      this.albumCaption = params['albumCaption'] || '';
       this.apiAddress = this.apiService.getApiAddress();
 
       this.fetchPhotos(this.photoId);
@@ -60,11 +59,9 @@ export class PhotoDetailsComponent implements OnInit {
       try {
         const response:any[] = await lastValueFrom(this.apiService.getHelper<[]>(`${this.apiAddress}/api/photodetails/${this.albumId}`));
         if (response.length) {
-          const { albumID } = response[0];
-          this.albumId = albumID;
-  
+   
           const albums:any[] = await lastValueFrom(this.apiService.getHelper<[]>(`${this.apiAddress}/api/albums`));
-          const album = albums.find(({ albumID: id }) => id === albumID);
+          const album = albums.find(({ albumID: id }) => id === this.albumId);
           this.albumCaption = album?.caption || 'No caption available';
         }
 
@@ -106,22 +103,22 @@ export class PhotoDetailsComponent implements OnInit {
     }
   }
 
-  getIndexPlusOne = (pid:number):number => {
+  getPhotoNumber = (pid:number):number => {
     const photo = this.photos.find(p => p.photoID === pid);
     return photo ? this.photos.indexOf(photo) + 1 : 0;
   };
 
   updateClickList(): void {
-    this.indexPlusOne = this.getIndexPlusOne(this.photoId);
-    const index = this.indexPlusOne > 0 ? this.indexPlusOne - 1 : 0;
+    this.photoNumber = this.getPhotoNumber(this.photoId);
+    const index = this.photoNumber > 0 ? this.photoNumber - 1 : 0;
     const photo = this.photos[index];
-    this.captionToShow = this.photos[this.indexPlusOne > 0 ? this.indexPlusOne - 1 : 0].caption;
+    this.captionToShow = this.photos[this.photoNumber > 0 ? this.photoNumber - 1 : 0].caption;
 
     this.first = this.photos[0]?.photoID || 0;
     this.last = this.photos[this.photos.length - 1]?.photoID || 0;
 
-    this.prev = this.indexPlusOne > 1 ? this.photos[this.indexPlusOne - 2]?.photoID || this.first : this.first;
-    this.next = this.indexPlusOne < this.photos.length ? this.photos[this.indexPlusOne]?.photoID || this.last : this.last;
+    this.prev = this.photoNumber > 1 ? this.photos[this.photoNumber - 2]?.photoID || this.first : this.first;
+    this.next = this.photoNumber < this.photos.length ? this.photos[this.photoNumber]?.photoID || this.last : this.last;
   }
 
   getDetailsRoute(id: number): string {
