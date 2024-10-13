@@ -21,11 +21,11 @@ const routes: Routes = [
     component: AlbumsComponent,
   },
   {
-    path: "photos/:albumId/:albumCaption",
+    path: "photos/:albumId",
     component: PhotosComponent,
   },
   {
-    path: "photodetails/:photoId/:albumId",
+    path: "photodetails/:photoId",
     component: PhotoDetailsComponent,
   },
 ];

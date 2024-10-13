@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { ApiHelperService } from '../services/api-helper.service';
 import { GlobalStateService } from '../services/global-state.service';
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Album } from '../../models/album.model';
 
 @Component({
   selector: 'app-photos',
@@ -46,7 +47,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.albumId = +this.route.snapshot.paramMap.get('albumId')!;
-    this.albumCaption = this.route.snapshot.paramMap.get('albumCaption')!;
+    this.albumCaption = '';
     this.subscriptions.add(
       this.globalStateService.loading.subscribe(loading => {
         this.opacity$.next(loading ? 1 : 0);
@@ -65,6 +66,17 @@ export class PhotosComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         this.photos = response;
         this.captions = response.map(p => p.caption);
+        if (response.length > 0) {
+          this.albumCaption = response[0]?.albumCaption ?? 'No album caption available';
+        } else {
+          if (this.albumId > 0) {
+            this.apiService.getHelper<Album>(`${this.apiAddress}/api/albums/${this.albumId}`)
+              .subscribe(album => {
+                this.albumCaption = album?.caption ?? 'No album caption available';
+              })
+          }
+        }
+
         this.showDeleteConfirmationModals = response.map(() => false);
         if (this.globalStateService.isAuthorizedSubject.value) {
           this.photos = this.addDefaultImage(this.photos);

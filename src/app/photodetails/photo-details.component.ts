@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiHelperService } from '../services/api-helper.service'; 
 import { lastValueFrom } from 'rxjs';
+import { Photo } from '../../models/photo.model';
 
 @Component({
   selector: 'app-details',
@@ -30,7 +31,7 @@ export class PhotoDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.photoId = +params['photoId'] || 0;
-      this.albumId = +params['albumId'] || 0;
+      this.albumId = 0;
       this.apiAddress = this.apiService.getApiAddress();
 
       this.fetchPhotos(this.photoId);
@@ -51,57 +52,28 @@ export class PhotoDetailsComponent implements OnInit {
       try {
         const randomPhotoId = await lastValueFrom(this.apiService.getHelper<number>(`${this.apiAddress}/api/photodetails/savedphotoid`));
         this.photoId = randomPhotoId;
-        await this.getAllPhotosFromAlbumWithSavedPhotoId();
+        await this.getAllPhotosInAlbumByPhotoId(randomPhotoId);
       } catch (error) {
         alert('Could not contact server ' + error);
       }
     } else {
-      try {
-        const response:any[] = await lastValueFrom(this.apiService.getHelper<[]>(`${this.apiAddress}/api/photodetails/${this.albumId}`));
-        if (response.length) {
-   
-          const albums:any[] = await lastValueFrom(this.apiService.getHelper<[]>(`${this.apiAddress}/api/albums`));
-          const album = albums.find(({ albumID: id }) => id === this.albumId);
-          this.albumCaption = album?.caption || 'No caption available';
-        }
-
-        this.photos = response;
-        this.updateClickList();
-      } catch (error) {
-        alert('Could not contact server ' + error);
-      }
+      await this.getAllPhotosInAlbumByPhotoId(photoId);
     }
   };
 
-  async getAllPhotosFromAlbumWithSavedPhotoId(): Promise<void> {
-    try { 
-      const response = await lastValueFrom(this.apiService.getHelper<any[]>(`${this.apiAddress}/api/photodetails/0`));
-      if (response.length) {
-        const { albumID } = response[0];
-        this.albumId = albumID;
-
-        const albums:any[] = await lastValueFrom(this.apiService.getHelper<[]>(`${this.apiAddress}/api/albums`));
-        const album = albums.find(({ albumID: id }) => id === albumID);
-        this.albumCaption = album?.caption || 'No caption available';
-      }
-
-      this.photos = response;
+  async getAllPhotosInAlbumByPhotoId(id: number): Promise<void> {
+    try {
+      const photo = await lastValueFrom(this.apiService.getHelper<Photo>(`${this.apiAddress}/api/photodetails/${id}`));
+      this.albumId = photo.albumID;
+      this.albumCaption = photo.albumCaption || 'No caption available';
+      const photoList = await lastValueFrom(this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${this.albumId}`));
+      this.photos = photoList;
       this.updateClickList();
     } catch (error) {
       alert('Could not contact server ' + JSON.stringify(error));
     }
   }
   
-
-  async fetchPhotosByAlbumId(albumId: number): Promise<void> {
-    try {
-      const response = await lastValueFrom(this.apiService.getHelper<any[]>(`${this.apiAddress}/api/photodetails/${albumId}`));
-      this.photos = response;
-      this.updateClickList();
-    } catch (error) {
-      alert('Could not contact server ' + JSON.stringify(error));
-    }
-  }
 
   getPhotoNumber = (pid:number):number => {
     const photo = this.photos.find(p => p.photoID === pid);
@@ -122,7 +94,7 @@ export class PhotoDetailsComponent implements OnInit {
   }
 
   getDetailsRoute(id: number): string {
-    return `/photodetails/${id}/${this.albumId}`;
+    return `/photodetails/${id}`;
   }
 
   setDetailsRoute(event: Event, id: number): void {

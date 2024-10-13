@@ -63,8 +63,8 @@
                      style="border:'4px solid white'; max-height:100%; max-width: 100%" alt="Sample Photo from Album" />
               </div>
               <div *ngIf="!isAddNewAlbum">
-                <div *ngIf="albumId && caption">
-                  <a [routerLink]="['/photos', albumId, caption]">
+                <div *ngIf="albumId">
+                  <a [routerLink]="['/photos', albumId]">
                     <img [src]="albumImageUrl" class="photo_198" 
                          style="border: '4px solid white'; max-height: 100%; max-width: 100% " alt="Sample Photo" />
                   </a>
@@ -119,7 +119,7 @@
     </h4>
     
     <h4 *ngIf="!isUpdateOldAlbum && !isAddNewAlbum">
-      <a [routerLink]="['/photos', albumId, caption]">{{ caption }}</a>
+      <a [routerLink]="['/photos', albumId]">{{ caption }}</a>
     </h4>
     
     <h4 *ngIf="isAddNewAlbum">

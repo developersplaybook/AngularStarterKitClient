@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   apiAddress: string = environment.apiAddress;
   currentTicks: number = new Date().getTime();
   imageUrl: string = `${this.apiAddress}/RandomHandler/Index/PhotoID=0/Size=M?${this.currentTicks}`;
-  detailsRoute: string = `/photodetails/0/0`;
+  detailsRoute: string = `/photodetails/0`;
   downloadUrl: string = `${this.apiAddress}/RandomHandler/Download/0/M?${this.currentTicks}`;
 
   constructor() { }
