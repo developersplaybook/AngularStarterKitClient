@@ -64,6 +64,10 @@ export class PhotosComponent implements OnInit, OnDestroy {
     this.globalStateService.setLoading(true);
     this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${this.albumId}`)
       .subscribe(response => {
+        if (this.globalStateService.isAuthorizedSubject.value) {
+          response = this.addDefaultImage(response);
+        }
+
         this.photos = response;
         this.captions = response.map(p => p.caption);
         if (response.length > 0) {
@@ -78,9 +82,6 @@ export class PhotosComponent implements OnInit, OnDestroy {
         }
 
         this.showDeleteConfirmationModals = response.map(() => false);
-        if (this.globalStateService.isAuthorizedSubject.value) {
-          this.photos = this.addDefaultImage(this.photos);
-        }
 
         this.photoRows = this.calculatePhotoRows();
         this.globalStateService.setLoading(false);
