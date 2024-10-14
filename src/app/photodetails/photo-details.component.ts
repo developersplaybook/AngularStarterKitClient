@@ -12,7 +12,6 @@ import { Photo } from '../../models/photo.model';
 export class PhotoDetailsComponent implements OnInit {
   photos: Photo[] = [];
   photoId: number = 0; 
-  albumId: number = 0; 
   albumCaption: string = ''; 
   apiAddress: string = ''; 
   captionToShow: string = ''; 
@@ -31,7 +30,6 @@ export class PhotoDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.photoId = +params['photoId'] || 0;
-      this.albumId = 0;
       this.apiAddress = this.apiService.getApiAddress();
 
       this.fetchPhotos(this.photoId);
@@ -64,9 +62,8 @@ export class PhotoDetailsComponent implements OnInit {
     this.photoId = id;
     try {
       const photo:Photo = await lastValueFrom(this.apiService.getHelper<Photo>(`${this.apiAddress}/api/photodetails/${id}`));
-      this.albumId = photo.albumID;
       this.albumCaption = photo.albumCaption || 'No caption available';
-      const photoList:Photo[] = await lastValueFrom(this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${this.albumId}`));
+      const photoList:Photo[] = await lastValueFrom(this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${photo.albumID}`));
       this.photos = photoList;
       this.updateClickList();
     } catch (error) {
