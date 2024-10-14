@@ -4,6 +4,7 @@ import { ApiHelperService } from '../services/api-helper.service';
 import { Observable, finalize } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Album } from '../../models/album.model';
 
 @Component({
   selector: 'app-albums',
@@ -15,8 +16,8 @@ export class AlbumsComponent implements OnInit {
   faSpinner = faSpinner;
   faSave = faSave;
   faTrash = faTrash;
-  albums: any[] = [];
-  albumRows: any[][] = [];
+  albums: Album[] = [];
+  albumRows: Album[][] = [];
   opacity$: Observable<number>;
   apiAddress: string = '';
   token: string = '';
@@ -38,25 +39,25 @@ export class AlbumsComponent implements OnInit {
     this.initializeErrorStates(this.albums);
   }
 
-  initializeErrorStates = (albumsArray: any[]): void => {
+  initializeErrorStates = (albumsArray: Album[]): void => {
     this.errorStates = {};
     albumsArray.forEach(album => {
       this.errorStates[album.albumID] = false;
     });
   };
 
-  noEmptyAlbumsExists(albums: any[]): boolean {
+  noEmptyAlbumsExists(albums: Album[]): boolean {
     return albums.every(album => album.photoCount > 0);
   }
 
   getAlbumsWithPhotoCount(): void {
     this.globalStateService.setLoading(true);
-    this.apiService.getHelper<any[]>(`${this.apiAddress}/api/albums`)
+    this.apiService.getHelper<Album[]>(`${this.apiAddress}/api/albums`)
       .subscribe({
         next: (response) => {
           this.albums = response;
           if (this.isAuthorized && this.noEmptyAlbumsExists(this.albums)) {
-            const emptyAlbum = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
+            const emptyAlbum:Album = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
             this.albums.push(emptyAlbum);
           }
 
@@ -71,8 +72,8 @@ export class AlbumsComponent implements OnInit {
       });
   }
 
-  getAlbumRows(): any[][] {
-    const rows = [];
+  getAlbumRows(): Album[][] { 
+    const rows: Album[][] = []; 
     for (let i = 0; i < this.albums.length; i += 2) {
       rows.push(this.albums.slice(i, i + 2));
     }
@@ -81,13 +82,13 @@ export class AlbumsComponent implements OnInit {
 
   handleDelete(albumId: number): void {
     this.globalStateService.setLoading(true);
-    this.apiService.deleteHelper(`${this.apiAddress}/api/albums/delete/${albumId}`, this.token!
+    this.apiService.deleteHelper<void>(`${this.apiAddress}/api/albums/delete/${albumId}`, this.token!
     ).subscribe({
       next: () => {
         const updatedAlbums = this.albums.filter(album => album.albumID !== albumId)
         this.albums = updatedAlbums;
         if (this.isAuthorized && this.noEmptyAlbumsExists(updatedAlbums)) {
-          const emptyAlbum = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
+          const emptyAlbum:Album = { albumID: 0, photoCount: 0, caption: '', isPublic: true };
           this.albums.push(emptyAlbum);
           this.albumRows = this.getAlbumRows();
         }
@@ -102,7 +103,7 @@ export class AlbumsComponent implements OnInit {
 
   handleUpdate(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
-    this.apiService.putHelper(
+    this.apiService.putHelper<string>(
       `${this.apiAddress}/api/albums/update/${albumId}`, newCaption, this.token!)
       .pipe(
         finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
@@ -119,12 +120,12 @@ export class AlbumsComponent implements OnInit {
 
   handleAdd(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
-    this.apiService.postHelper(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
+    this.apiService.postHelper<Album>(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
       .pipe(
         finalize(() => this.globalStateService.setLoading(false)) // Ensures loading is reset in any case
       )
       .subscribe({
-        next: (newAlbum: any) => {
+        next: (newAlbum: Album) => {
           // Update the albums list, keeping only albums with ID not equal to 0 and appending the new one
           this.albums = [...this.albums.filter(album => album.albumID !== 0), newAlbum];
           this.errorStates = { ...this.errorStates, [newAlbum.albumID]: false };

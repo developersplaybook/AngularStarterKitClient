@@ -6,9 +6,6 @@ import {
   ViewChild,
 } from '@angular/core';
 
-
-import { AngularSvgIconComponent } from '../angular-svg-icon/angular-svg-icon.component';
-
 @Component({
   selector: 'app-frame-bar',
   templateUrl: './frame-bar.component.html',

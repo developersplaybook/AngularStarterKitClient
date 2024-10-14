@@ -10,7 +10,7 @@ import { Photo } from '../../models/photo.model';
   styleUrls: ['./photo-details.component.scss']
 })
 export class PhotoDetailsComponent implements OnInit {
-  photos: any[] = [];
+  photos: Photo[] = [];
   photoId: number = 0; 
   albumId: number = 0; 
   albumCaption: string = ''; 
@@ -51,7 +51,6 @@ export class PhotoDetailsComponent implements OnInit {
     if (photoId === 0) {
       try {
         const randomPhotoId = await lastValueFrom(this.apiService.getHelper<number>(`${this.apiAddress}/api/photodetails/savedphotoid`));
-        this.photoId = randomPhotoId;
         await this.getAllPhotosInAlbumByPhotoId(randomPhotoId);
       } catch (error) {
         alert('Could not contact server ' + error);
@@ -62,11 +61,12 @@ export class PhotoDetailsComponent implements OnInit {
   };
 
   async getAllPhotosInAlbumByPhotoId(id: number): Promise<void> {
+    this.photoId = id;
     try {
-      const photo = await lastValueFrom(this.apiService.getHelper<Photo>(`${this.apiAddress}/api/photodetails/${id}`));
+      const photo:Photo = await lastValueFrom(this.apiService.getHelper<Photo>(`${this.apiAddress}/api/photodetails/${id}`));
       this.albumId = photo.albumID;
       this.albumCaption = photo.albumCaption || 'No caption available';
-      const photoList = await lastValueFrom(this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${this.albumId}`));
+      const photoList:Photo[] = await lastValueFrom(this.apiService.getHelper<Photo[]>(`${this.apiAddress}/api/photos/album/${this.albumId}`));
       this.photos = photoList;
       this.updateClickList();
     } catch (error) {
