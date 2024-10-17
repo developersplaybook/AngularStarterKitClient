@@ -97,7 +97,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   }
 
 
-  addDefaultImage(responsePhotos: Photo[]): any[] {
+  addDefaultImage(responsePhotos: Photo[]): Photo[] {
     const emptyPhoto: Photo = { photoID: 0, albumID: this.albumId, caption: '', albumCaption: '' };
     return [...responsePhotos, emptyPhoto];
   }
@@ -134,7 +134,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   handleUpdate(index: number): void {
     this.selectedIndex = index;
     this.globalStateService.setLoading(true);
-    this.apiService.putHelper<string>(`${this.apiAddress}/api/photos/update/${this.photos[index].photoID}`, this.captions[index] , this.token)
+    this.apiService.putHelper<string, string>(`${this.apiAddress}/api/photos/update/${this.photos[index].photoID}`, this.captions[index] , this.token)
       .subscribe(() => {
         this.globalStateService.setLoading(false);
       });

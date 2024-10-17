@@ -103,7 +103,7 @@ export class AlbumsComponent implements OnInit {
 
   handleUpdate(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
-    this.apiService.putHelper<string>(
+    this.apiService.putHelper<string, string>(
       `${this.apiAddress}/api/albums/update/${albumId}`, newCaption, this.token!)
       .pipe(
         finalize(() => this.globalStateService.setLoading(false)) // This will be called after next, error, or complete
@@ -120,7 +120,7 @@ export class AlbumsComponent implements OnInit {
 
   handleAdd(albumId: number, newCaption: string): void {
     this.globalStateService.setLoading(true);
-    this.apiService.postHelper<Album>(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
+    this.apiService.postHelper<Album, string>(`${this.apiAddress}/api/albums/add`, newCaption, this.token)
       .pipe(
         finalize(() => this.globalStateService.setLoading(false)) // Ensures loading is reset in any case
       )

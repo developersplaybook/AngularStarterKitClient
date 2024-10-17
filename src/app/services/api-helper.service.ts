@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment'; 
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiHelperService {
   apiAddress: string = environment.apiAddress;
+  
   constructor(private http: HttpClient) {}
 
   private toBearer(token: string | null): { [key: string]: string } {
     return token ? { "Authorization": `Bearer ${token}` } : {};
   }
-  
+
   private defaultHeaders(token: string | null): HttpHeaders {
     const headers = {
       'Content-Type': 'application/json',
@@ -22,13 +23,13 @@ export class ApiHelperService {
       'Accept-Language': '*',
       ...this.toBearer(token)
     };
-  
+
     return new HttpHeaders(headers);
   }
 
   getApiAddress() {
     return this.apiAddress;
-  };
+  }
 
   getHelper<T>(url: string): Observable<T> {
     const headers = this.defaultHeaders(null);
@@ -36,7 +37,7 @@ export class ApiHelperService {
       .pipe(catchError(this.handleError));
   }
 
-  postHelper<T>(url: string, request: any, token: string): Observable<T> {
+  postHelper<T, U>(url: string, request: U, token: string): Observable<T> {
     const headers = this.defaultHeaders(token);
     const body = request ? JSON.stringify(request) : null;
     return this.http.post<T>(url, body, { headers })
@@ -52,14 +53,14 @@ export class ApiHelperService {
       .pipe(catchError(this.handleError));
   }
 
-  putHelper<T>(url: string, request: any, token: string): Observable<T> {
+  putHelper<T, U>(url: string, request: U, token: string): Observable<T> {
     const headers = this.defaultHeaders(token);
     const body = request ? JSON.stringify(request) : null;
     return this.http.put<T>(url, body, { headers })
       .pipe(catchError(this.handleError));
   }
 
-  patchHelper<T>(url: string, request: any, token: string): Observable<T> {
+  patchHelper<T, U>(url: string, request: U, token: string): Observable<T> {
     const headers = this.defaultHeaders(token);
     const body = request ? JSON.stringify(request) : null;
     return this.http.patch<T>(url, body, { headers })
@@ -72,8 +73,8 @@ export class ApiHelperService {
       .pipe(catchError(this.handleError));
   }
 
-  private handleError(error: any) {
+  private handleError(error: unknown): Observable<never> {
     // Handle error logic here
-    return throwError(error);
+    return throwError(() => new Error('An error occurred'));
   }
 }
