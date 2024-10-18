@@ -1,0 +1,20 @@
+<div [ngStyle]="appHeader">
+    <div [ngStyle]="left">
+      <img
+        *ngIf="showImage"
+        src="assets/images/logo.png"
+        alt="angularLogo"
+        [ngStyle]="rotatingImageStyle"
+        [@rotateAnimation]="showImage ? 'in' : 'out'"
+      />
+    </div>
+    <div [ngStyle]="middle">{{ text }}</div>
+    <div [ngStyle]="right">
+      <img
+        [src]="icon"
+        [alt]="iconClass"
+        [ngClass]="iconClass"
+      />
+    </div>
+  </div>
+  

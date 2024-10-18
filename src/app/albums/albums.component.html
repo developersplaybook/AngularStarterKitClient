@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="row">
+      <div class="row-height col">
+        <div class="col-md-3 hidden-md hidden-sm hidden-xs col-md-height col-md-top custom-vertical-left-border custom-vertical-right-border grey-background">
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Photo albums</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9 col-md-height">
+          <div class="row">
+            <fa-icon 
+            [icon]="faSpinner" 
+            [spin]="true" 
+            [style.text-align]="'center'"
+            [style.opacity]="opacity$ | async"
+          ></fa-icon>
+            <table class="album-frame" style="font-size: 10px; font-family: verdana, arial, helvetica, sans-serif;">
+              <tbody>
+                <tr *ngFor="let row of albumRows; let i = index">
+                  <td *ngFor="let album of row; let j = index">
+                    <app-album-frame
+                      [albumId]="album.albumID"
+                      [photoCount]="album.photoCount"
+                      [caption]="album.caption"
+                      [itemCount]="j"
+                      (delete)="handleDelete(album.albumID)"
+                      (update)="handleUpdate(album.albumID, $event.caption)"
+                      (add)="handleAdd(album.albumID, $event.caption)"
+                      [hasError]="!!errorStates[album.albumID]"
+                      (onCaptionChange)="handleCaptionChange(album.albumID)">                     >
+                    </app-album-frame>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

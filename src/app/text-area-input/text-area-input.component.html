@@ -1,0 +1,13 @@
+<div style="display: inline;">
+  <textarea
+    spellcheck="false"
+    [ngStyle]="{
+      'text-align': 'center',
+      'border': hasError ? '2px solid red' : '1px solid black',
+      'background-color': hasError ? '#ffe6e6' : 'white'
+    }"
+    [value]="text"
+    [placeholder]="placeholder"
+    (input)="updateValue($event)">
+  </textarea>
+</div>

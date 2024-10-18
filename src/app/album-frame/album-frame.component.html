@@ -1,0 +1,138 @@
+<td class="item">
+    <div *ngIf="isUpdateOldAlbum" style="display: flex; justify-content: center; align-items: center; color: black;">
+      <fa-icon 
+        [icon]="faSave" 
+        (click)="!isDisabledForAddAndUpdate && handleUpdateAlbum()"
+        [ngStyle]="{
+          fontSize: '2em',
+          margin: '0 50px 0 80px',
+          cursor: isDisabledForAddAndUpdate ? 'not-allowed' : 'pointer',
+          opacity: isDisabledForAddAndUpdate ? 0.5 : 1
+        }"
+      ></fa-icon>
+      <fa-icon 
+        [icon]="faTrash" 
+        (click)="!isDisabledForDelete && onDelete(albumId)"
+        [ngStyle]="{
+          fontSize: '2em',
+          margin: '0 150px 0 30px',
+          cursor: isDisabledForDelete ? 'not-allowed' : 'pointer',
+          opacity: isDisabledForDelete ? 0.5 : 1
+        }"
+      ></fa-icon>
+    </div>
+  
+    <div *ngIf="isAddNewAlbum" style="align-items: center; color: black;">
+      <fa-icon 
+        [icon]="faSave" 
+        (click)="!isDisabledForAddAndUpdate && handleAddAlbum()"
+        [ngStyle]="{
+          fontSize: '2em',
+          margin: '0 50px 0 100px',
+          cursor: isDisabledForAddAndUpdate ? 'not-allowed' : 'pointer',
+          opacity: isDisabledForAddAndUpdate ? 0.5 : 1
+        }"
+      ></fa-icon>
+    </div>
+  
+    <table cellpadding="0" cellspacing="0" class="album-frame">
+      <tbody>
+        <tr>
+          <td class="topx----">
+            <img alt="" src="/assets/images/album-l1.gif" style="max-height: 100%; max-width: 100%; vertical-align: top;" />
+          </td>
+          <td class="top-x---">
+            <img alt="" src="/assets/images/album-mtl.gif" style="max-height: 100%; max-width: 100%; vertical-align: top;" />
+          </td>
+          <td class="top--x--"></td>
+          <td class="top---x-">
+            <img alt="" src="/assets/images/album-mtr.gif" style="max-height: 100%; max-width: 100%; vertical-align: top;" />
+          </td>
+          <td class="top----x">
+            <img alt="" src="/assets/images/album-r1.gif" style="max-height: 100%; max-width: 100%; vertical-align: top;" />
+          </td>
+        </tr>
+        <tr>
+          <td class="mtpx----">
+            <img alt="" src="/assets/images/album-l2.gif" style="max-height:100%; max-width:100%; vertical-align: top" />
+          </td>
+          <td colSpan="3" rowSpan="3">
+            <div class="fade-in-animation">
+              <div *ngIf="isAddNewAlbum">
+                <img src="/assets/images/default-image-small.png" class="photo_198" 
+                     style="border:'4px solid white'; max-height:100%; max-width: 100%" alt="Sample Photo from Album" />
+              </div>
+              <div *ngIf="!isAddNewAlbum">
+                <div *ngIf="albumId">
+                  <a [routerLink]="['/photos', albumId]">
+                    <img [src]="albumImageUrl" class="photo_198" 
+                         style="border: '4px solid white'; max-height: 100%; max-width: 100% " alt="Sample Photo" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="mtp----x">
+            <img alt="" src="/assets/images/album-r2.gif" style="max-height: 100%; max-width:100%; vertical-align: top" />
+          </td>
+        </tr>
+        <tr>
+          <td class="midx----"></td>
+          <td class="mid----x"></td>
+        </tr>
+        <tr>
+          <td class="mbtx----">
+            <img alt="" src="/assets/images/album-l3.gif" style=" max-height: 100%; max-width: 100%; vertical-align: top" />
+          </td>
+          <td class="mbt----x">
+            <img alt="" src="/assets/images/album-r3.gif" style=" max-height: 100%; max-width: 100%; vertical-align: top" />
+          </td>
+        </tr>
+        <tr>
+          <td class="botx----">
+            <img alt="" src="/assets/images/album-l4.gif" style=" max-height: 100%; max-width: 100%; vertical-align: top " />
+          </td>
+          <td class="bot-x---" style=" textAlign: 'left' ">
+            <img alt="" src="/assets/images/album-mbl.gif" style="max-height: 100%; max-width: 100%; vertical-align: top " />
+          </td>
+          <td class="bot--x--"></td>
+          <td class="bot---x-" style=" textAlign: 'right' ">
+            <img alt="" src="/assets/images/album-mbr.gif" style=" max-height: 100%; max-width: 100%; vertical-align: top " />&nbsp;&nbsp;
+          </td>
+          <td class="bot----x">
+            <img alt="" src="/assets/images/album-r4.gif" style=" max-height: 100%; max-width: 100%; vertical-align: top " />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <h4 *ngIf="isUpdateOldAlbum">
+      <div style="color: rgb(152, 0, 0);">
+        <app-text-area-input  
+          [text]="caption" 
+          placeholder="Enter Caption"
+          [hasError]="hasError"
+          (onTextChanged)="handleCaptionChangeInternal($event)"
+          >
+      </app-text-area-input >
+      </div>
+    </h4>
+    
+    <h4 *ngIf="!isUpdateOldAlbum && !isAddNewAlbum">
+      <a [routerLink]="['/photos', albumId]">{{ caption }}</a>
+    </h4>
+    
+    <h4 *ngIf="isAddNewAlbum">
+      <div style="color: rgb(152, 0, 0);">
+        <app-text-area-input 
+        [text]="caption" 
+        [placeholder]="'Enter Caption'"
+        [hasError]="hasError"
+        (onTextChanged)="handleCaptionChangeInternal($event)"
+      ></app-text-area-input>
+      </div>
+    </h4>
+  
+    <div>{{ photoCount }} images</div>
+  </td>
+  

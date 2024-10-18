@@ -1,0 +1,7 @@
+.rotate-enter-active, .rotate-leave-active {
+    transition: transform 10s;
+  }
+  .rotate-enter, .rotate-leave-to /* .rotate-leave-active in <2.1.8 */ {
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+  

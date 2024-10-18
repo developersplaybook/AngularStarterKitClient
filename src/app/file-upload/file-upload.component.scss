@@ -1,0 +1,11 @@
+/* file-upload.component.scss */
+.drag-drop-zone {
+    border: 2px dashed #cccccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .inside-drag-area {
+    border-color: #00ff00;
+  }
+  

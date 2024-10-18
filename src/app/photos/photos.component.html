@@ -1,0 +1,86 @@
+<div class="container">
+    <div class="row">
+      <div class="row-height col">
+        <div class="col-md-3 hidden-md hidden-sm hidden-xs col-md-height col-md-top custom-vertical-left-border custom-vertical-right-border grey-background">
+          <div class="row">
+            <div class="col-md-12">
+              <h4>{{ albumCaption }}</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9 col-md-height">
+          <div class="row">
+            <div class="buttonbar buttonbar-top">
+              <a routerLink="/albums">
+                <img alt="" src="/assets/images/button-gallery.gif" />
+              </a>
+            </div>
+            <div class="row justify-content-md-center">
+              <div class="col-xs-6"></div>
+              <div class="col-md-auto">
+                <fa-icon [icon]="faSpinner" [spin]="true" [ngStyle]="{ opacity: opacity$ | async }"></fa-icon>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <table class="view" style="border-collapse: collapse;">
+                <tbody>
+                  <!-- If there are no photo rows, display "Album empty" -->
+                  <ng-container *ngIf="photoRows && photoRows.length > 0; else emptyAlbum">
+                    <tr *ngFor="let row of photoRows; let rowIndex = index">
+                      <td *ngFor="let photo of row; let index = index">
+                        <ng-container *ngIf="photo.photoID === 0">
+                          <app-text-area-input [text]="dragAndDropPhotoCaption" placeholder="Enter caption" [hasError]="false"
+                            (onTextChanged)="handleDragAndDropPhotoCaptionChanged($event)"></app-text-area-input>
+                          <app-photo-frame [defaultImage]="true">
+                            <app-file-upload [albumId]="albumId" [caption]="dragAndDropPhotoCaption"
+                              (onPhotoAdded)="handlePhotoAdded()"></app-file-upload>
+                          </app-photo-frame>
+                        </ng-container>
+                        <ng-container *ngIf="photo.photoID !== 0">
+                          <ng-container *ngIf="isAuthorized">
+                            <app-text-area-input [text]="captions[5 * rowIndex + index]" placeholder="Enter caption" [hasError]="false"
+                              (onTextChanged)="handleCaptionChange($event, index)"></app-text-area-input>
+                          </ng-container>
+                          <ng-container *ngIf="!isAuthorized">
+                            {{ captions[5 * rowIndex + index] }}
+                          </ng-container>
+                          <app-photo-frame>
+                            <div class="fade-in-animation">
+                              <a [routerLink]="['/photodetails', photo.photoID]">
+                                <img [src]="imageUrl(photo)" alt="" style="border: 4px solid white" />
+                              </a>
+                            </div>
+                          </app-photo-frame>
+                          <ng-container *ngIf="isAuthorized">
+                            <a (click)="toggleDelete(5 * rowIndex + index)" style="margin-right: 10px;">
+                              <fa-icon [icon]="faTrash" size="1x"></fa-icon>
+                            </a>
+                            <app-delete-confirmation *ngIf="showDeleteConfirmationModals[5 * rowIndex + index]"
+                              [showModal]="showDeleteConfirmationModals[5 * rowIndex + index]"
+                              (confirmModal)="handleDelete(5 * rowIndex + index)" (hideModal)="toggleDelete(5 * rowIndex + index)"
+                              [message]="'Do you want to remove ' + photo.caption + '?'"></app-delete-confirmation>
+                            <a (click)="handleUpdate(5 * rowIndex + index)" style="margin-left: 10px;">
+                              <fa-icon [icon]="faSave" size="1x"></fa-icon>
+                            </a>
+                          </ng-container>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <!-- Display this block when there are no photo rows -->
+                  <ng-template #emptyAlbum>
+                    <tr>
+                      <td>
+                        <h4>Album empty</h4>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

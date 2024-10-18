@@ -1,0 +1,90 @@
+<!-- frame-bar.component.html -->
+<div>
+  <header class="navbar navbar-expand-lg navbar-light bg-light"
+    [ngStyle]="{ background: todaysHeaderCss, height: '81px', margin: '0' }">
+    <div class="container">
+      <a class="navbar-brand pb-5 mb-3" href="/">
+        <app-angular-svg-icon 
+          [text]="'Angular Starter Kit'" 
+          [icon]="logo" 
+          [iconClass]="'logo'">
+      </app-angular-svg-icon>
+      </a>
+      <button #elCollapseButton class="navbar-toggler" type="button">
+        <span class="navbar-toggler-icon">
+          <img [src]="hamburger" alt="Hamburger Icon" />
+        </span>
+      </button>
+      <div class="collapse navbar-collapse navbar-nav-container">
+        <ul class="navbar-nav navbar-nav-main spriteTabs">
+          <li class="nav-item">
+            <a class="nav-link no-underline active" 
+              routerLink="/" 
+              (click)="closeSidebar()" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">Home<span></span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link no-underline" 
+              routerLink="/albums" 
+              (click)="closeSidebar()" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">Album<span></span></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right spriteTabs">
+          <li class="nav-item">
+            <a href="https://www.google.com/maps/place/Statue+of+Liberty" target="_blank" rel="noopener noreferrer"
+              class="nav-link no-underline">
+              <span></span>&nbsp;&nbsp;<i class="fas fa-map-marker-alt"></i><span></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/user" 
+              class="nav-link no-underline" 
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <span></span>&nbsp;<i class="fas fa-user"></i><span></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <div #sidebarRef class="sidebar" [ngClass]="{ open: sidebarOpen }">
+    <div class="sidebar-header">
+      <a href="https://www.google.com/maps/place/Statue+of+Liberty/@40.688969,-113.0657959,4z/data=!4m10!1m2!2m1!1sstaue+of+liberty!3m6!1s0x89c25090129c363d:0x40c6a5770d25022b!8m2!3d40.6892494!4d-74.0445004!15sChFzdGF0dWUgb2YgbGliZXJ0eVoTIhFzdGF0dWUgb2YgbGliZXJ0eZIBE2hpc3RvcmljYWxfbGFuZG1hcmvgAQA!16zL20vMDcycDg?entry=ttu"
+        target="_blank" rel="noopener noreferrer" class="nav-link no-underline">
+        <span></span>&nbsp;&nbsp;<i class="fas fa-map-marker-alt"></i><span></span>
+      </a>
+      <a routerLink="/user" class="nav-link" (click)="closeSidebar()"><i class="fas fa-user"></i></a>
+      <a class="nav-link" (click)="closeSidebar()"><i class="fas fa-close"></i></a>
+    </div>
+    <div class="nav-list">
+      <ul class="navbar-nav">
+        <li #homeLi class="nav-item">
+          <a routerLink="/" class="nav-link" 
+             (click)="closeSidebar()" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        </li>
+        <li #albumsLi class="nav-item">
+          <a routerLink="/albums" class="nav-link" 
+             (click)="closeSidebar()" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{ exact: true }">Album</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="main-content" class="content"> 
+  <ng-content></ng-content>
+</div>
+
+<footer class="bg-light text-center text-lg-start"   [ngStyle]="{ background: todaysHeaderCss, height: '81px' }">
+  <div class="text-center p-3">
+    &copy; 2024 Angular Starter Kit. All Rights Reserved.
+  </div>
+</footer>
