@@ -14,7 +14,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 export class LoginOutFormComponent implements OnInit {
   faSpinner = faSpinner;
   passwordForm: FormGroup;
-  captionText: string = 'Log in';
+  captionText: string = '';
   loading: boolean = false;
   apiAddress: string = '';
   token: string = '';
@@ -37,6 +37,7 @@ export class LoginOutFormComponent implements OnInit {
   ngOnInit(): void {
     this.globalStateService.isAuthorized.subscribe(authStatus => {
       this.isAuthorized = authStatus;
+      this.isAuthorized ? this.captionText="Log out":this.captionText="Log in"
     });
   }
 

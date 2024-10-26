@@ -1,17 +1,19 @@
-<div class="modal-dialog modal-sm modal-dialog-centered">
+<div 
+    class="modal show" 
+    tabindex="-1" 
+    role="dialog" 
+    aria-labelledby="example-modal-sizes-title-sm"
+    style="display: block; background: rgba(0,0,0,0.5);"
+>
+  <div class="modal-dialog modal-sm modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title h4">
           <form [formGroup]="passwordForm" style="display:inline">
             <label style="display:inline">
               <strong>{{ captionText }}</strong>
-              <input *ngIf="!isAuthorized" 
-                     type="password" 
-                     formControlName="password"
-                     placeholder="Password"
-                     style="text-align: center;" 
-                     (keyup.enter)="handleLogInOut()"
-                     />
+              <input *ngIf="!isAuthorized" type="password" formControlName="password" placeholder="Password"
+                style="text-align: center;" (keyup.enter)="handleLogInOut()" />
             </label>
           </form>
         </div>
@@ -27,4 +29,4 @@
       </div>
     </div>
   </div>
-  
+</div>
