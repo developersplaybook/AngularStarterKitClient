@@ -5,6 +5,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { GlobalStateService } from '../services/global-state.service';
 
 @Component({
   selector: 'app-frame-bar',
@@ -15,10 +17,18 @@ export class FrameBarComponent {
   @ViewChild('elCollapseButton', { static: false })
   elCollapseButton!: ElementRef;
   @ViewChild('sidebar') sidebarRef!: ElementRef;
-
+  showLoginModal :boolean = false;
   logoPath = 'assets/images/logo.png';
   hamburgerPath = 'assets/images/Hamburger.png';
+  private subscriptions: Subscription[] = [];
+  constructor(
+    private globalStateService: GlobalStateService,
 
+  ) {
+    this.showLoginModal = this.globalStateService.showLoginModalSubject.value;
+  }
+
+  
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
     const mainContent = document.getElementById('main-content');
@@ -32,6 +42,11 @@ export class FrameBarComponent {
   closeSidebar(): void {
     this.sidebarOpen = false;
     document.getElementById('main-content')?.classList.remove('content-blur');
+  }
+
+  openShowLoginModal(): void {
+    this.globalStateService.setShowLoginModal(true);
+    this.closeSidebar();
   }
 
   handleResize(): void {
@@ -55,6 +70,13 @@ export class FrameBarComponent {
   todaysFooterCss = this.getCss('Footer', this.dayNumber);
 
   ngOnInit(): void {
+    this.subscriptions.push(
+      this.globalStateService.showLoginModalSubject.subscribe(modal => {
+        console.log("modal", modal);
+        this.showLoginModal = modal;
+      })
+    );
+
     this.elCollapseButton?.nativeElement.addEventListener(
       'click',
       this.toggleSidebar.bind(this)
@@ -63,6 +85,8 @@ export class FrameBarComponent {
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    
     this.elCollapseButton.nativeElement.removeEventListener(
       'click',
       this.toggleSidebar.bind(this)

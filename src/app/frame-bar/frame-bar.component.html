@@ -40,10 +40,11 @@
             </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/user" 
+            <a 
               class="nav-link no-underline" 
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }">
+              (click)="openShowLoginModal()"
+              style="cursor: pointer;"
+            >
               <span></span>&nbsp;<i class="fas fa-user"></i><span></span>
             </a>
           </li>
@@ -57,8 +58,7 @@
         target="_blank" rel="noopener noreferrer" class="nav-link no-underline">
         <span></span>&nbsp;&nbsp;<i class="fas fa-map-marker-alt"></i><span></span>
       </a>
-      <a routerLink="/user" class="nav-link" (click)="closeSidebar()"><i class="fas fa-user"></i></a>
-      <a class="nav-link" (click)="closeSidebar()"><i class="fas fa-close"></i></a>
+      <a class="nav-link" (click)="openShowLoginModal()" style="cursor: pointer;"><i class="fas fa-user"></i></a>
     </div>
     <div class="nav-list">
       <ul class="navbar-nav">
@@ -88,3 +88,4 @@
     &copy; 2024 Angular Starter Kit. All Rights Reserved.
   </div>
 </footer>
+<app-login-out-form *ngIf="showLoginModal"></app-login-out-form>>

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service';
-import { Observable, finalize } from 'rxjs';
+import { Observable, finalize, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Album } from '../../models/album.model';
@@ -23,6 +23,7 @@ export class AlbumsComponent implements OnInit {
   token: string = '';
   isAuthorized: boolean = false;
   errorStates: { [key: number]: boolean } = {};
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private globalStateService: GlobalStateService,
@@ -37,6 +38,15 @@ export class AlbumsComponent implements OnInit {
   ngOnInit(): void {
     this.getAlbumsWithPhotoCount();
     this.initializeErrorStates(this.albums);
+    this.subscriptions.push(
+      this.globalStateService.isAuthorized.subscribe(authStatus => {
+        this.isAuthorized = authStatus;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   initializeErrorStates = (albumsArray: Album[]): void => {

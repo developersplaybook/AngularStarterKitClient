@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service'; 
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';   
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-album-frame',
@@ -22,7 +23,8 @@ export class AlbumFrameComponent {
   @Input() hasError!: boolean;
   @Output() onCaptionChange = new EventEmitter<string>();
   apiAddress: string = ''; 
-  isAuthorized: boolean =false;; 
+  isAuthorized: boolean =false;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private apiService: ApiHelperService,     
@@ -30,6 +32,18 @@ export class AlbumFrameComponent {
   {
     this.apiAddress = this.apiService.getApiAddress();
     this.isAuthorized = this.globalStateService.isAuthorizedSubject.value;
+  }
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.globalStateService.isAuthorized.subscribe(authStatus => {
+        this.isAuthorized = authStatus;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   get albumImageUrl(): string {

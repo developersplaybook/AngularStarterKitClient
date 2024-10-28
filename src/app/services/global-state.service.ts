@@ -9,11 +9,13 @@ export class GlobalStateService {
   private _loading = new BehaviorSubject<boolean>(false);
   private _isAuthorized = new BehaviorSubject<boolean>(false);
   private _token = new BehaviorSubject<string | null>(null);
+  private _showLoginModal = new BehaviorSubject<boolean>(false);
 
   // Exposing BehaviorSubjects directly for state updates and direct value access
   loading = this._loading.asObservable();
   isAuthorized = this._isAuthorized.asObservable();
   token = this._token.asObservable();
+  showLoginModal = this._showLoginModal.asObservable();
 
   // Exposing BehaviorSubjects directly for value access
   get loadingSubject() {
@@ -34,6 +36,13 @@ export class GlobalStateService {
     this._loading.next(value);
   }
 
+  get showLoginModalSubject() {
+    return this._showLoginModal;
+  }
+
+  setShowLoginModal(value: boolean) {
+    this._showLoginModal.next(value);
+  }
 
   setIsAuthorized(isAuthorized: boolean) {
     this._isAuthorized.next(isAuthorized);

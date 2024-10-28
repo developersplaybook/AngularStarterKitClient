@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GlobalStateService } from './../services/global-state.service';
 import { ApiHelperService } from './../services/api-helper.service';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';    
 
 @Component({
@@ -19,10 +18,16 @@ export class LoginOutFormComponent implements OnInit {
   apiAddress: string = '';
   token: string = '';
   isAuthorized:boolean = false;
+  showLoginModal: boolean = false;
+  get modalBackgroundStyle(): { [key: string]: string } {
+    return {
+      background: this.showLoginModal ? 'rgba(0,0,0,0.5)' : 'none'
+    };
+  }
+  private subscriptions: Subscription[] = [];
   
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private globalStateService: GlobalStateService,
     private apiService: ApiHelperService
   ) {
@@ -31,18 +36,38 @@ export class LoginOutFormComponent implements OnInit {
     });
     this.apiAddress = this.apiService.getApiAddress();
     this.isAuthorized = this.globalStateService.isAuthorizedSubject.value;
+    this.loading = this.globalStateService.loadingSubject.value;
     this.token = this.globalStateService.tokenSubject.value ? this.globalStateService.tokenSubject.value: '';
+    this.showLoginModal = this.globalStateService.showLoginModalSubject.value;
   }
 
   ngOnInit(): void {
-    this.globalStateService.isAuthorized.subscribe(authStatus => {
-      this.isAuthorized = authStatus;
-      this.isAuthorized ? this.captionText="Log out":this.captionText="Log in"
-    });
+    this.globalStateService.setShowLoginModal(true);
+    this.subscriptions.push(
+      this.globalStateService.showLoginModalSubject.subscribe(modal => {
+        console.log("modal", modal);
+        this.showLoginModal = modal;
+      })
+    );
+
+    this.subscriptions.push(
+      this.globalStateService.isAuthorized.subscribe(authStatus => {
+        this.isAuthorized = authStatus;
+        this.captionText = this.isAuthorized ? "Log out" : "Log in";
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from all subscriptions to avoid memory leaks
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   handleClose(): void {
-    this.router.navigate(['albums']);
+    if (this.showLoginModal) {
+      this.globalStateService.setShowLoginModal(false);
+      console.log("handleClose");
+    }
   }
 
   async checkPasswordOnServerAsync(password: string): Promise<any> {
@@ -52,7 +77,6 @@ export class LoginOutFormComponent implements OnInit {
     } catch (error) {
       console.error('Error in checkPasswordOnServerAsync:', error);
       this.captionText = 'Wrong password, try again...';
-      throw error;
     }
   }
 
@@ -62,12 +86,11 @@ export class LoginOutFormComponent implements OnInit {
       return response;
     } catch (error) {
       console.error('Error in logOutUserAsync:', error);
-      throw error;
     }
   }
 
   async handleLogInOut(): Promise<void> {
-    this.loading = true;
+    this.globalStateService.setLoading(true);
     try {
       if (this.isAuthorized) {
         const response = await this.logOutUserAsync();
@@ -90,7 +113,7 @@ export class LoginOutFormComponent implements OnInit {
     } catch (error) {
       console.error('Error:', error);
     } finally {
-      this.loading = false;
+      this.globalStateService.setLoading(false);
     }
   }
 }

@@ -1,9 +1,10 @@
 <div 
+    *ngIf="showLoginModal" 
     class="modal show" 
     tabindex="-1" 
     role="dialog" 
     aria-labelledby="example-modal-sizes-title-sm"
-    style="display: block; background: rgba(0,0,0,0.5);"
+    [ngStyle]="modalBackgroundStyle"
 >
   <div class="modal-dialog modal-sm modal-dialog-centered">
     <div class="modal-content">
