@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service'; 
 import { faSpinner, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';   
@@ -28,7 +28,9 @@ export class AlbumFrameComponent {
 
   constructor(
     private apiService: ApiHelperService,     
-    private globalStateService: GlobalStateService,) 
+    private globalStateService: GlobalStateService,
+    private cd: ChangeDetectorRef 
+  ) 
   {
     this.apiAddress = this.apiService.getApiAddress();
     this.isAuthorized = this.globalStateService.isAuthorizedSubject.value;
@@ -38,6 +40,7 @@ export class AlbumFrameComponent {
     this.subscriptions.push(
       this.globalStateService.isAuthorized.subscribe(authStatus => {
         this.isAuthorized = authStatus;
+        this.cd.markForCheck();
       })
     );
   }

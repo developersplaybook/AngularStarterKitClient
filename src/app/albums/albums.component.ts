@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GlobalStateService } from '../services/global-state.service';
 import { ApiHelperService } from '../services/api-helper.service';
 import { Observable, finalize, Subscription } from 'rxjs';
@@ -28,6 +28,7 @@ export class AlbumsComponent implements OnInit {
   constructor(
     private globalStateService: GlobalStateService,
     private apiService: ApiHelperService,
+    private cd: ChangeDetectorRef
   ) {
     this.opacity$ = this.globalStateService.loading.pipe(map(loading => loading ? 1 : 0));
     this.apiAddress = this.apiService.getApiAddress();
@@ -35,12 +36,18 @@ export class AlbumsComponent implements OnInit {
     this.token = this.globalStateService.tokenSubject.value ? this.globalStateService.tokenSubject.value : '';
   }
 
-  ngOnInit(): void {
+  init():void{
     this.getAlbumsWithPhotoCount();
     this.initializeErrorStates(this.albums);
+  } 
+
+  ngOnInit(): void {
+    this.init();
     this.subscriptions.push(
       this.globalStateService.isAuthorized.subscribe(authStatus => {
         this.isAuthorized = authStatus;
+        this.init();
+        this.cd.markForCheck();
       })
     );
   }
