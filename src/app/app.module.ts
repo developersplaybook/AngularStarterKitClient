@@ -22,6 +22,7 @@ import { LoginOutFormComponent } from './login-out-form/login-out-form.component
 import { AlbumFrameComponent } from './album-frame/album-frame.component';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { InfoMessageComponent } from './home/info/info-component'; // Adjust the path as necessary
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     DeleteConfirmationComponent,
     PhotosComponent,
     LoginOutFormComponent,
-    AlbumFrameComponent
+    AlbumFrameComponent,
+    InfoMessageComponent
   ],
   imports: [
     CommonModule,
