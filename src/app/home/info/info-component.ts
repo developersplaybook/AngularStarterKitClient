@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
                 If you have any questions or feedback, feel free to email me&mdash;my contact information is in the book.
             </div>
             <p>Please check:</p>
-            <ul>
+            <ul [ngStyle]="uStyles">
                 <li>Authorization with JSON WebToken</li>
                 <li>File upload with drag & drop</li>
                 <li>Handling of HTTPContext.Session</li>
@@ -38,5 +38,11 @@ export class InfoMessageComponent {
         color: 'red',
         padding: '20px',
         'font-family': 'Arial, sans-serif',
+    };
+
+    uStyles = { 
+        'list-style-image': 'none', 
+        'list-style-type': 'disc', 
+        'padding-left': '20px' 
     };
 }
