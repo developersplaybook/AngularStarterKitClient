@@ -22,7 +22,9 @@ import { LoginOutFormComponent } from './login-out-form/login-out-form.component
 import { AlbumFrameComponent } from './album-frame/album-frame.component';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InfoMessageComponent } from './home/info/info-component'; // Adjust the path as necessary
+import { InfoMessageComponent } from './home/info/info-component'; 
+import { UpcomingFeaturesComponent } from './home/upcoming/upcoming-features-component'; 
+import { OtherFeaturesComponent } from './home/other/other-features-component'; 
 
 
 @NgModule({
@@ -40,7 +42,9 @@ import { InfoMessageComponent } from './home/info/info-component'; // Adjust the
     PhotosComponent,
     LoginOutFormComponent,
     AlbumFrameComponent,
-    InfoMessageComponent
+    InfoMessageComponent,
+    UpcomingFeaturesComponent,
+    OtherFeaturesComponent
   ],
   imports: [
     CommonModule,
