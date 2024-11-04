@@ -53,6 +53,12 @@ export class PhotosComponent implements OnInit, OnDestroy {
         this.opacity$.next(loading ? 1 : 0);
       })
     );
+    this.subscriptions.add(
+      this.globalStateService.isAuthorized.subscribe((isAuthorized) => {
+        this.isAuthorized = isAuthorized
+        this.fetchPhotos();
+      })
+    );
     this.fetchPhotos();
   }
 
