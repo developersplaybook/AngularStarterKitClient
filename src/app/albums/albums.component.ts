@@ -81,7 +81,7 @@ export class AlbumsComponent implements OnInit {
           this.albumRows = this.getAlbumRows();
         },
         error: (error) => {
-          console.error('Failed to fetch albums:', error);
+          alert('ServerAPI must be started. Please read the book for info!');
         },
         complete: () => {
           this.globalStateService.setLoading(false);
